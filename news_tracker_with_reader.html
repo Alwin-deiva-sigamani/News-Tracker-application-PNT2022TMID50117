@@ -1,0 +1,412 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{display:flex;flex-direction:column;background:var(--color-background-tertiary);min-height:620px}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.logo{font-size:18px;font-weight:500;color:var(--color-text-primary);letter-spacing:-0.5px;cursor:pointer}
+.logo span{color:#185FA5}
+.search-box{flex:1;display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 12px}
+.search-box input{border:none;background:transparent;outline:none;font-size:14px;color:var(--color-text-primary);width:100%}
+.search-box i{color:var(--color-text-secondary);font-size:16px}
+.icon-btn{width:34px;height:34px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary)}
+.icon-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.cats{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:0 16px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat-btn{padding:10px 14px;font-size:13px;font-weight:400;border:none;background:transparent;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;white-space:nowrap}
+.cat-btn:hover{color:var(--color-text-primary)}
+.cat-btn.active{color:#185FA5;border-bottom:2px solid #185FA5;font-weight:500}
+.content{display:flex;flex:1;gap:0}
+.main-feed{flex:1;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.feed-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px}
+.sort-select{font-size:12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:4px 8px;background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;cursor:pointer;transition:border-color 0.15s;margin-bottom:2px}
+.card:hover{border-color:var(--color-border-secondary)}
+.card.featured{border-left:3px solid #185FA5}
+.card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.card-source{font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;background:#E6F1FB;color:#0C447C}
+.card-time{font-size:11px;color:var(--color-text-tertiary)}
+.card-tag{font-size:11px;padding:2px 8px;border-radius:99px;margin-left:auto}
+.tag-tech{background:#EEEDFE;color:#3C3489}
+.tag-biz{background:#E1F5EE;color:#085041}
+.tag-world{background:#FAEEDA;color:#633806}
+.tag-sci{background:#EAF3DE;color:#27500A}
+.tag-health{background:#FBEAF0;color:#72243E}
+.tag-sports{background:#FAECE7;color:#712B13}
+.card-title{font-size:15px;font-weight:500;color:var(--color-text-primary);line-height:1.45;margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-actions{display:flex;align-items:center;gap:8px}
+.act-btn{font-size:12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:5px 10px;background:transparent;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:5px}
+.act-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.act-btn.liked{color:#D4537E;border-color:#ED93B1;background:#FBEAF0}
+.read-btn{margin-left:auto;font-size:12px;padding:5px 14px;border:none;border-radius:var(--border-radius-md);background:#185FA5;color:#fff;cursor:pointer;display:flex;align-items:center;gap:5px}
+.read-btn:hover{background:#0C447C}
+.sidebar{width:220px;padding:16px 16px 16px 0;display:flex;flex-direction:column;gap:14px;flex-shrink:0}
+.sb-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.sb-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.trend-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer}
+.trend-item:last-child{border-bottom:none;padding-bottom:0}
+.trend-num{font-size:11px;color:var(--color-text-tertiary);min-width:16px;font-weight:500}
+.trend-text{font-size:13px;color:var(--color-text-primary);line-height:1.4}
+.trend-count{font-size:11px;color:var(--color-text-tertiary)}
+.pref-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0}
+.pref-label{font-size:13px;color:var(--color-text-primary)}
+.toggle{width:32px;height:18px;border-radius:99px;background:var(--color-border-tertiary);cursor:pointer;position:relative;border:none;transition:background 0.2s;flex-shrink:0}
+.toggle.on{background:#185FA5}
+.toggle::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform 0.2s}
+.toggle.on::after{transform:translateX(14px)}
+.reading-bar{background:var(--color-background-secondary);border-radius:var(--border-radius-md);height:6px;overflow:hidden;margin-top:4px}
+.reading-fill{height:100%;border-radius:99px;background:#185FA5}
+.stat-row{display:flex;gap:8px}
+.stat-cell{flex:1;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px;text-align:center}
+.stat-num{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.stat-lbl{font-size:10px;color:var(--color-text-secondary);margin-top:2px}
+
+.reader-page{display:none;flex-direction:column;background:var(--color-background-tertiary);min-height:620px}
+.reader-page.active{display:flex}
+.app.reader-mode > :not(.reader-page){display:none}
+
+.reader-topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:#185FA5;background:transparent;border:none;cursor:pointer;padding:5px 0}
+.back-btn:hover{color:#0C447C}
+.reader-progress-bar{height:3px;background:var(--color-background-secondary)}
+.reader-progress-fill{height:100%;background:#185FA5;transition:width 0.3s}
+
+.reader-body{flex:1;display:flex;gap:0;overflow:hidden}
+.reader-main{flex:1;padding:24px 32px;overflow-y:auto;max-width:660px}
+.reader-sidebar{width:200px;padding:20px 16px 20px 0;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+
+.reader-cat-badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:99px;margin-bottom:12px}
+.reader-title{font-size:22px;font-weight:500;color:var(--color-text-primary);line-height:1.35;margin-bottom:12px}
+.reader-byline{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.reader-source-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;background:#E6F1FB;color:#0C447C}
+.reader-time{font-size:12px;color:var(--color-text-tertiary)}
+.reader-reading-time{font-size:12px;color:var(--color-text-tertiary);display:flex;align-items:center;gap:4px}
+
+.reader-body-text p{font-size:15px;color:var(--color-text-primary);line-height:1.8;margin-bottom:16px}
+.reader-body-text .lead{font-size:16px;font-weight:500;color:var(--color-text-primary);line-height:1.7;margin-bottom:18px}
+.reader-body-text h3{font-size:16px;font-weight:500;color:var(--color-text-primary);margin:20px 0 8px}
+.reader-body-text blockquote{border-left:3px solid #185FA5;padding:10px 16px;margin:16px 0;background:var(--color-background-secondary);border-radius:0 var(--border-radius-md) var(--border-radius-md) 0}
+.reader-body-text blockquote p{font-size:14px;color:var(--color-text-secondary);margin:0;font-style:italic;line-height:1.6}
+
+.reader-actions{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:0.5px solid var(--color-border-tertiary)}
+.reader-act-btn{font-size:13px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 14px;background:transparent;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:6px}
+.reader-act-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.reader-act-btn.liked{color:#D4537E;border-color:#ED93B1;background:#FBEAF0}
+
+.related-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.related-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px;cursor:pointer;margin-bottom:8px}
+.related-card:hover{border-color:var(--color-border-secondary)}
+.related-card-tag{font-size:10px;padding:2px 7px;border-radius:99px;margin-bottom:6px;display:inline-block}
+.related-card-title{font-size:12px;font-weight:500;color:var(--color-text-primary);line-height:1.4;margin-bottom:4px}
+.related-card-source{font-size:11px;color:var(--color-text-tertiary)}
+.notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#185FA5}
+.icon-btn-wrap{position:relative}
+</style>
+
+<h2 class="sr-only">News Tracker Application with full article reader page and navigation</h2>
+
+<div class="app" id="app">
+
+  <div class="topbar" id="feedTopbar">
+    <div class="logo" onclick="goHome()">News<span>Track</span></div>
+    <div class="search-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" placeholder="Search news, topics, sources..." id="searchInput" />
+    </div>
+    <div style="display:flex;gap:8px">
+      <div class="icon-btn-wrap">
+        <button class="icon-btn" aria-label="Notifications"><i class="ti ti-bell" aria-hidden="true"></i><div class="notif-dot"></div></button>
+      </div>
+      <button class="icon-btn" aria-label="Saved"><i class="ti ti-bookmark" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="cats" id="catBar">
+    <button class="cat-btn active" data-cat="All">All</button>
+    <button class="cat-btn" data-cat="Technology">Technology</button>
+    <button class="cat-btn" data-cat="Business">Business</button>
+    <button class="cat-btn" data-cat="World">World</button>
+    <button class="cat-btn" data-cat="Science">Science</button>
+    <button class="cat-btn" data-cat="Health">Health</button>
+    <button class="cat-btn" data-cat="Sports">Sports</button>
+  </div>
+
+  <div class="content" id="feedContent">
+    <div class="main-feed">
+      <div class="feed-header">
+        <span class="feed-title" id="feedTitle">All articles</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="latest">Latest first</option>
+          <option value="trending">Trending</option>
+          <option value="recommended">Recommended</option>
+        </select>
+      </div>
+      <div id="newsCards"></div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-card">
+        <div class="sb-title">Trending now</div>
+        <div id="trendsList"></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-title">My preferences</div>
+        <div id="prefsList"></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-title">Reading stats</div>
+        <div class="stat-row">
+          <div class="stat-cell"><div class="stat-num">12</div><div class="stat-lbl">Today</div></div>
+          <div class="stat-cell"><div class="stat-num">47</div><div class="stat-lbl">This week</div></div>
+        </div>
+        <div style="margin-top:12px">
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Daily goal (15 articles)</div>
+          <div class="reading-bar"><div class="reading-fill" style="width:80%"></div></div>
+          <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:4px;text-align:right">12/15</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reader-page" id="readerPage">
+    <div class="reader-topbar">
+      <button class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back to feed</button>
+      <div style="flex:1"></div>
+      <span style="font-size:12px;color:var(--color-text-tertiary)" id="readerProgress">0% read</span>
+    </div>
+    <div class="reader-progress-bar"><div class="reader-progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="reader-body">
+      <div class="reader-main" id="readerMain" onscroll="updateProgress()">
+        <div id="readerContent"></div>
+        <div class="reader-actions" id="readerActions"></div>
+      </div>
+      <div class="reader-sidebar">
+        <div class="related-title">Related articles</div>
+        <div id="relatedList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const articles = [
+  {id:1,source:"TechCrunch",time:"5 min ago",cat:"Technology",tag:"tag-tech",tagLabel:"Tech",title:"Google's Gemini 2.5 Ultra Outperforms Rivals on Multimodal Benchmarks",desc:"The latest model from Google DeepMind sets new records across vision, reasoning, and code generation tasks, reigniting the AI race ahead of expected GPT-5 release.",featured:true,liked:false,saved:false,reads:4820,body:[
+    {type:"lead",text:"Google DeepMind's latest flagship model, Gemini 2.5 Ultra, has achieved top scores across every major multimodal AI benchmark, outperforming OpenAI, Anthropic, and Meta on tasks spanning vision, reasoning, and code generation."},
+    {type:"p",text:"The announcement, made at Google I/O 2026, marks a significant shift in the competitive AI landscape. Gemini 2.5 Ultra scored 91.2% on the MMMU benchmark — a test requiring genuine multimodal understanding — surpassing the previous leader by nearly 4 percentage points."},
+    {type:"h3",text:"What makes it different"},
+    {type:"p",text:"Unlike previous generations, Gemini 2.5 Ultra introduces native audio reasoning alongside image and text, allowing the model to process and respond to voice inputs with contextual nuance that earlier systems lacked. Internal testing also showed a 38% improvement in coding accuracy on competitive programming tasks."},
+    {type:"quote",text:"We're not just closing the gap — we're redefining what multimodal means in 2026. This is the model we've been working toward for three years."},
+    {type:"p",text:"The model is expected to power Google Search's AI mode, Google Workspace, and the upcoming Pixel 10 series' on-device AI features. Enterprise API access is planned for Q3 2026, with pricing expected to be competitive with existing top-tier models."},
+    {type:"h3",text:"Industry reaction"},
+    {type:"p",text:"AI researchers on social platforms reacted with cautious optimism, noting that benchmark performance doesn't always translate to real-world gains. Several practitioners called for third-party evaluation before drawing conclusions, citing historical cases where benchmark leaders underperformed in deployment."},
+    {type:"p",text:"OpenAI has not yet commented publicly, but industry sources suggest GPT-5 is expected within weeks — setting the stage for what analysts are calling the most competitive AI quarter in history."}
+  ]},
+  {id:2,source:"Reuters",time:"23 min ago",cat:"Business",tag:"tag-biz",tagLabel:"Business",title:"Sensex Hits All-Time High as Foreign Investors Pour ₹12,000 Crore Into Indian Equities",desc:"Indian stock markets surged to a record close driven by sustained FII inflows and positive cues from the US Federal Reserve's rate pause decision.",featured:false,liked:false,saved:false,reads:3100,body:[
+    {type:"lead",text:"India's benchmark BSE Sensex closed at a historic high of 82,740 points on Friday, fueled by record foreign institutional investor (FII) inflows of ₹12,000 crore in a single session."},
+    {type:"p",text:"The rally was broad-based, with banking, IT, and infrastructure sectors leading the charge. The Nifty 50 also hit a fresh all-time high at 25,120, reflecting growing global confidence in India's economic trajectory."},
+    {type:"h3",text:"What's driving the inflows"},
+    {type:"p",text:"The US Federal Reserve's decision to hold interest rates steady at its June meeting has encouraged global capital to seek higher returns in emerging markets. India, with its 7.2% GDP growth rate and stable currency, has emerged as the top destination for FII capital in Asia."},
+    {type:"quote",text:"India is no longer just an emerging market story — it's becoming a core allocation for global institutional portfolios."},
+    {type:"p",text:"Analysts at Motilal Oswal noted that continued government capital expenditure, robust GST collections, and a recovering rural economy are underpinning the fundamentals that support foreign confidence."},
+    {type:"p",text:"Retail participation has also surged, with new demat account openings touching 3.2 million in May — a monthly record — suggesting growing domestic appetite for equities alongside foreign inflows."}
+  ]},
+  {id:3,source:"BBC News",time:"1 hr ago",cat:"World",tag:"tag-world",tagLabel:"World",title:"UN Climate Summit Reaches Landmark Agreement on Carbon Credits for Developing Nations",desc:"Representatives from 147 countries signed a binding framework that will allow developing economies to trade verified carbon credits on global markets starting 2027.",featured:false,liked:false,saved:false,reads:2900,body:[
+    {type:"lead",text:"In a breakthrough moment for international climate policy, 147 nations signed the Geneva Carbon Framework at the UN Climate Summit, creating a binding mechanism for developing countries to participate in global carbon markets."},
+    {type:"p",text:"The agreement, years in the making, resolves a long-standing dispute over how to verify and trade carbon credits fairly between rich and developing nations. Starting in 2027, countries meeting verified carbon reduction targets can trade credits on a UN-supervised exchange."},
+    {type:"h3",text:"Why this matters"},
+    {type:"p",text:"Developing nations have long argued that carbon market rules disadvantaged them by imposing expensive verification requirements designed for wealthier economies. The new framework includes a tiered compliance system and a $40 billion fund to help low-income countries build monitoring infrastructure."},
+    {type:"quote",text:"This is the moment the Global South finally has a seat at the carbon market table, not just a commitment to reduce emissions while richer nations trade freely."},
+    {type:"p",text:"India and Brazil, two of the largest signatories, are expected to be major beneficiaries, given their vast forest cover and renewable energy projects which can generate substantial carbon credits."},
+    {type:"p",text:"Environmental groups welcomed the deal but cautioned that implementation will be the real test, noting that previous climate finance commitments have frequently fallen short of actual disbursements."}
+  ]},
+  {id:4,source:"Nature",time:"2 hrs ago",cat:"Science",tag:"tag-sci",tagLabel:"Science",title:"Scientists Confirm Room-Temperature Superconductor at Ambient Pressure",desc:"A peer-reviewed study provides reproducible evidence for superconductivity at 22°C and standard atmospheric pressure using a layered boride compound.",featured:true,liked:false,saved:false,reads:6700,body:[
+    {type:"lead",text:"In what physicists are calling the most significant materials science breakthrough in decades, a team from Seoul National University has published peer-reviewed, independently reproduced evidence of room-temperature superconductivity at ambient pressure."},
+    {type:"p",text:"The material — a layered lanthanum boride compound designated LBH-7 — demonstrates zero electrical resistance at 22°C and standard atmospheric pressure, conditions achievable in any ordinary room. Previous claimed room-temperature superconductors required extreme pressures that made practical application impossible."},
+    {type:"h3",text:"How it was verified"},
+    {type:"p",text:"Three independent research groups in Germany, Japan, and the United States were provided samples and confirmed the results over a six-month verification period — a process specifically designed to avoid the premature announcements that plagued earlier superconductor claims."},
+    {type:"quote",text:"We made sure this time would be different. Six months, three continents, three labs — and they all got the same result."},
+    {type:"p",text:"The implications are vast. Room-temperature superconductors could revolutionize power transmission (eliminating the 6-8% energy lost in current grids), enable practical magnetic levitation transport, and dramatically reduce the cost of MRI machines and quantum computers."},
+    {type:"h3",text:"What comes next"},
+    {type:"p",text:"The research team has filed international patents and is in discussions with semiconductor manufacturers about scaling production. Experts caution that moving from laboratory samples to manufacturable materials typically takes 5-10 years, but note that the commercial pressure to accelerate this timeline will be immense."}
+  ]},
+  {id:5,source:"Healthline",time:"3 hrs ago",cat:"Health",tag:"tag-health",tagLabel:"Health",title:"New WHO Guidelines Recommend Cutting Ultra-Processed Food Intake to Under 10% of Daily Calories",desc:"The World Health Organization released updated nutritional guidance after a 5-year meta-analysis of 80 studies linking ultra-processed foods to chronic disease risk.",featured:false,liked:false,saved:false,reads:2300,body:[
+    {type:"lead",text:"The World Health Organization published its most specific nutritional guidance to date on Friday, recommending that ultra-processed foods account for no more than 10% of daily caloric intake — a threshold most people in high-income countries currently exceed by a wide margin."},
+    {type:"p",text:"The guidelines follow a five-year systematic review of 80 studies covering 9.8 million participants across 32 countries. The evidence links high ultra-processed food consumption to increased risk of obesity, type 2 diabetes, cardiovascular disease, and certain cancers."},
+    {type:"h3",text:"What counts as ultra-processed"},
+    {type:"p",text:"The WHO uses the NOVA classification system, under which ultra-processed foods are defined as industrial formulations containing ingredients rarely found in home kitchens — emulsifiers, artificial flavours, colour additives, and preservatives. This includes most packaged snacks, soft drinks, breakfast cereals, and fast food items."},
+    {type:"quote",text:"The evidence is now strong enough and consistent enough that we can give people a specific number to aim for, not just general advice to eat less processed food."},
+    {type:"p",text:"Nutrition scientists outside the WHO welcomed the specificity of the 10% threshold, noting that actionable targets are more useful than vague recommendations. Some researchers, however, raised concerns about how the guidelines would apply in low-income settings where ultra-processed foods are often the only affordable option."}
+  ]},
+  {id:6,source:"ESPN",time:"4 hrs ago",cat:"Sports",tag:"tag-sports",tagLabel:"Sports",title:"India Qualifies for ICC Champions Trophy Final — Kohli Scores Unbeaten 117",desc:"India stormed into the final with a dominant 8-wicket victory over South Africa, powered by a masterclass innings from Virat Kohli at the Dubai International Stadium.",featured:false,liked:false,saved:false,reads:8900,body:[
+    {type:"lead",text:"India secured their place in the ICC Champions Trophy 2026 final with a commanding 8-wicket victory over South Africa at the Dubai International Stadium, with Virat Kohli delivering an unbeaten 117 to anchor a masterful run chase."},
+    {type:"p",text:"South Africa posted a competitive 271/7 after winning the toss, with Aiden Markram top-scoring with 74. But India's bowling unit was relentless — Jasprit Bumrah took 3 wickets for 38 runs, and Axar Patel's 2/34 in the middle overs choked the South African batting lineup."},
+    {type:"h3",text:"Kohli's masterclass"},
+    {type:"p",text:"In the run chase, Rohit Sharma provided an explosive 56-run opening stand before falling to a sharp caught-behind. From that point, Kohli took complete control, timing the ball with characteristic precision and rotating strike intelligently to keep the scoreboard moving without unnecessary risks."},
+    {type:"quote",text:"This innings was vintage Kohli — controlled, patient, but always dangerous. He made a chase of 272 look like a training session."},
+    {type:"p",text:"Kohli reached his century off 102 balls, raising his bat to a roaring crowd, and finished unbeaten on 117 off 118. His ODI average in knockout matches now stands at a remarkable 68.4."},
+    {type:"h3",text:"The final"},
+    {type:"p",text:"India will face Australia in Sunday's final, a rematch of the 2023 ODI World Cup final which Australia won in Ahmedabad. The match promises to be one of cricket's most anticipated fixtures of the year, with both sides in peak form entering the decider."}
+  ]},
+  {id:7,source:"Wired",time:"5 hrs ago",cat:"Technology",tag:"tag-tech",tagLabel:"Tech",title:"Open-Source LLMs Now Running on Standard Laptops Thanks to New Compression Technique",desc:"Stanford researchers introduced a 2-bit quantisation method that reduces model size by 87% with minimal accuracy loss, enabling on-device AI without cloud dependency.",featured:false,liked:false,saved:false,reads:5100,body:[
+    {type:"lead",text:"Researchers at Stanford's AI Lab have published a new 2-bit quantisation technique called NanoQuant that reduces the size of large language models by up to 87%, making it possible to run powerful AI models on consumer laptops without any internet connection."},
+    {type:"p",text:"The technique works by compressing model weights from the standard 16-bit floating point format down to 2 bits while using a novel error-correction layer to preserve output quality. In benchmark tests, NanoQuant models scored within 3% of their full-precision counterparts on standard reasoning and language tasks."},
+    {type:"h3",text:"What this means in practice"},
+    {type:"p",text:"A model like Llama 3 70B — which previously required a high-end server with multiple GPUs — can now run on a MacBook Pro with 16GB of RAM, completing responses in under 2 seconds per query. The team has released the quantisation toolkit as open source on GitHub."},
+    {type:"quote",text:"We wanted to prove that powerful AI doesn't have to mean cloud AI. Your device should be able to think for itself."},
+    {type:"p",text:"Privacy-conscious users and enterprises with strict data governance requirements stand to benefit most immediately. Running models locally means sensitive documents, communications, and queries never leave the device — eliminating a core concern around cloud-based AI services."}
+  ]},
+  {id:8,source:"Economic Times",time:"6 hrs ago",cat:"Business",tag:"tag-biz",tagLabel:"Business",title:"Zoho Crosses $1.5 Billion ARR, Eyes Global Expansion into European Enterprise Market",desc:"Chennai-based SaaS giant Zoho Corp announced record ARR amid aggressive hiring in Europe and plans to triple R&D headcount by 2027.",featured:false,liked:false,saved:false,reads:2600,body:[
+    {type:"lead",text:"Zoho Corporation, the Chennai-headquartered software company known for its bootstrapped approach to building enterprise software, announced it has crossed $1.5 billion in annual recurring revenue — a milestone that cements its position among the world's top independent SaaS companies."},
+    {type:"p",text:"CEO Sridhar Vembu made the announcement at Zoho's annual customer conference in Chennai, also revealing plans for aggressive expansion into the European enterprise market. The company plans to open regional offices in Germany, France, and the Netherlands before the end of 2026."},
+    {type:"h3",text:"The European push"},
+    {type:"p",text:"Europe represents a significant opportunity for Zoho, particularly given growing enterprise concerns about data sovereignty. Zoho has positioned itself as an alternative to US-headquartered cloud providers, emphasising its private ownership structure and commitment to local data residency."},
+    {type:"quote",text:"European enterprises want a credible alternative. We've built that alternative without outside capital, without compromises — and we're ready to show them what that means."},
+    {type:"p",text:"The company also announced it will triple its R&D headcount from 8,000 to 24,000 by 2027, with new engineering hubs planned in Tirunelveli and Coimbatore in addition to its existing Chennai campuses."},
+    {type:"p",text:"Analysts noted that Zoho's profitability — rare in a sector that often prioritizes growth over margins — gives it unusual flexibility to fund expansion without diluting ownership or taking on debt."}
+  ]}
+];
+
+const trends=[{num:1,text:"#AIBreakthrough",count:"28.4K posts"},{num:2,text:"#IndiaVsSA",count:"19.1K posts"},{num:3,text:"#SuperconductorProof",count:"14.7K posts"},{num:4,text:"#Sensex50000",count:"9.3K posts"},{num:5,text:"#WHOGuidelines",count:"5.8K posts"}];
+const prefs=[{label:"Personalized feed",key:"personalized",on:true},{label:"Breaking alerts",key:"breaking",on:true},{label:"Weekly digest",key:"digest",on:false},{label:"Offline reading",key:"offline",on:false}];
+let state={cat:"All",sort:"latest",search:"",prefs:{personalized:true,breaking:true,digest:false,offline:false},likes:{},saves:{}};
+let currentArticle=null;
+
+function renderCards(){
+  const q=state.search.toLowerCase();
+  let list=articles.filter(a=>{
+    if(state.cat!=="All"&&a.cat!==state.cat)return false;
+    if(q&&!a.title.toLowerCase().includes(q)&&!a.desc.toLowerCase().includes(q))return false;
+    return true;
+  });
+  if(state.sort==="trending")list=[...list].sort((a,b)=>b.reads-a.reads);
+  const c=document.getElementById("newsCards");
+  if(!list.length){c.innerHTML='<div style="padding:2rem;text-align:center;color:var(--color-text-secondary);font-size:14px">No articles found.</div>';return;}
+  c.innerHTML=list.map(a=>{
+    const liked=!!state.likes[a.id];const saved=!!state.saves[a.id];
+    return`<div class="card${a.featured?' featured':''}" style="margin-bottom:10px">
+      <div class="card-meta">
+        <span class="card-source">${a.source}</span>
+        <span class="card-time">${a.time}</span>
+        <span class="card-tag ${a.tag}">${a.tagLabel}</span>
+      </div>
+      <div class="card-title">${a.title}</div>
+      <div class="card-desc">${a.desc}</div>
+      <div class="card-actions">
+        <button class="act-btn${liked?' liked':''}" onclick="toggleLike(${a.id})"><i class="ti ti-heart" aria-hidden="true"></i>${liked?'Liked':'Like'}</button>
+        <button class="act-btn${saved?' liked':''}" onclick="toggleSave(${a.id})"><i class="ti ti-bookmark" aria-hidden="true"></i>${saved?'Saved':'Save'}</button>
+        <button class="act-btn" onclick="shareArt('${a.title.replace(/'/g,"\\'")}')"><i class="ti ti-share" aria-hidden="true"></i>Share</button>
+        <button class="read-btn" onclick="openReader(${a.id})"><i class="ti ti-book" aria-hidden="true"></i>Read full article</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function openReader(id){
+  currentArticle=articles.find(a=>a.id===id);
+  if(!currentArticle)return;
+  const a=currentArticle;
+  const tagClass=a.tag;
+  const tagColors={
+    'tag-tech':'background:#EEEDFE;color:#3C3489',
+    'tag-biz':'background:#E1F5EE;color:#085041',
+    'tag-world':'background:#FAEEDA;color:#633806',
+    'tag-sci':'background:#EAF3DE;color:#27500A',
+    'tag-health':'background:#FBEAF0;color:#72243E',
+    'tag-sports':'background:#FAECE7;color:#712B13'
+  };
+  const tcss=tagColors[tagClass]||tagColors['tag-tech'];
+  const bodyHtml=a.body.map(b=>{
+    if(b.type==="lead")return`<p class="lead">${b.text}</p>`;
+    if(b.type==="p")return`<p>${b.text}</p>`;
+    if(b.type==="h3")return`<h3>${b.text}</h3>`;
+    if(b.type==="quote")return`<blockquote><p>${b.text}</p></blockquote>`;
+    return'';
+  }).join("");
+  const liked=!!state.likes[id];const saved=!!state.saves[id];
+  document.getElementById("readerContent").innerHTML=`
+    <span class="reader-cat-badge" style="${tcss}">${a.tagLabel}</span>
+    <div class="reader-title">${a.title}</div>
+    <div class="reader-byline">
+      <span class="reader-source-badge">${a.source}</span>
+      <span class="reader-time">${a.time}</span>
+      <span class="reader-reading-time"><i class="ti ti-clock" aria-hidden="true" style="font-size:13px"></i> ${Math.ceil(a.body.length*0.8)} min read</span>
+    </div>
+    <div class="reader-body-text">${bodyHtml}</div>`;
+  document.getElementById("readerActions").innerHTML=`
+    <button class="reader-act-btn${liked?' liked':''}" onclick="toggleLike(${id});reRenderActions(${id})"><i class="ti ti-heart" aria-hidden="true"></i>${liked?'Liked':'Like'}</button>
+    <button class="reader-act-btn${saved?' liked':''}" onclick="toggleSave(${id});reRenderActions(${id})"><i class="ti ti-bookmark" aria-hidden="true"></i>${saved?'Saved':'Save'}</button>
+    <button class="reader-act-btn" onclick="shareArt('${a.title.replace(/'/g,"\\'")}')"><i class="ti ti-share" aria-hidden="true"></i>Share</button>`;
+  const related=articles.filter(x=>x.id!==id&&(x.cat===a.cat||Math.random()>0.5)).slice(0,4);
+  document.getElementById("relatedList").innerHTML=related.map(r=>`
+    <div class="related-card" onclick="openReader(${r.id})">
+      <div class="related-card-tag ${r.tag}" style="${tagColors[r.tag]||''}">${r.tagLabel}</div>
+      <div class="related-card-title">${r.title}</div>
+      <div class="related-card-source">${r.source} · ${r.time}</div>
+    </div>`).join("");
+  document.getElementById("progressFill").style.width="0%";
+  document.getElementById("readerProgress").textContent="0% read";
+  const rm=document.getElementById("readerMain");rm.scrollTop=0;
+  document.getElementById("readerPage").classList.add("active");
+  document.getElementById("feedTopbar").style.display="none";
+  document.getElementById("catBar").style.display="none";
+  document.getElementById("feedContent").style.display="none";
+}
+
+function reRenderActions(id){
+  const a=articles.find(x=>x.id===id);if(!a)return;
+  const liked=!!state.likes[id];const saved=!!state.saves[id];
+  document.getElementById("readerActions").innerHTML=`
+    <button class="reader-act-btn${liked?' liked':''}" onclick="toggleLike(${id});reRenderActions(${id})"><i class="ti ti-heart" aria-hidden="true"></i>${liked?'Liked':'Like'}</button>
+    <button class="reader-act-btn${saved?' liked':''}" onclick="toggleSave(${id});reRenderActions(${id})"><i class="ti ti-bookmark" aria-hidden="true"></i>${saved?'Saved':'Save'}</button>
+    <button class="reader-act-btn" onclick="shareArt('${a.title.replace(/'/g,"\\'")}')"><i class="ti ti-share" aria-hidden="true"></i>Share</button>`;
+}
+
+function goHome(){
+  document.getElementById("readerPage").classList.remove("active");
+  document.getElementById("feedTopbar").style.display="flex";
+  document.getElementById("catBar").style.display="flex";
+  document.getElementById("feedContent").style.display="flex";
+  renderCards();
+}
+
+function updateProgress(){
+  const el=document.getElementById("readerMain");
+  const pct=Math.round((el.scrollTop/(el.scrollHeight-el.clientHeight))*100);
+  const safe=Math.min(100,Math.max(0,pct||0));
+  document.getElementById("progressFill").style.width=safe+"%";
+  document.getElementById("readerProgress").textContent=safe+"% read";
+}
+
+function toggleLike(id){state.likes[id]=!state.likes[id];renderCards();}
+function toggleSave(id){state.saves[id]=!state.saves[id];renderCards();}
+function shareArt(title){sendPrompt('Help me write a social media post sharing this news: '+title);}
+function togglePref(key){state.prefs[key]=!state.prefs[key];renderPrefs();}
+
+function renderTrends(){
+  document.getElementById("trendsList").innerHTML=trends.map(t=>`
+    <div class="trend-item" onclick="sendPrompt('Show me latest news about ${t.text}')">
+      <span class="trend-num">${t.num}</span>
+      <div><div class="trend-text">${t.text}</div><div class="trend-count">${t.count}</div></div>
+    </div>`).join("");
+}
+function renderPrefs(){
+  document.getElementById("prefsList").innerHTML=prefs.map(p=>`
+    <div class="pref-row">
+      <span class="pref-label">${p.label}</span>
+      <button class="toggle${state.prefs[p.key]?' on':''}" onclick="togglePref('${p.key}')" aria-label="Toggle ${p.label}"></button>
+    </div>`).join("");
+}
+
+document.getElementById("catBar").addEventListener("click",e=>{
+  const btn=e.target.closest(".cat-btn");if(!btn)return;
+  document.querySelectorAll(".cat-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");state.cat=btn.dataset.cat;
+  document.getElementById("feedTitle").textContent=state.cat==="All"?"All articles":state.cat;
+  renderCards();
+});
+document.getElementById("sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderCards();});
+document.getElementById("searchInput").addEventListener("input",e=>{state.search=e.target.value;renderCards();});
+
+renderCards();renderTrends();renderPrefs();
+</script>
